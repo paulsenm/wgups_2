@@ -11,3 +11,9 @@ class Package:
         self.priority = priority
         self.status = "At Hub"
         self.delivered_time = None
+
+
+
+    def __str__(self):
+        package_string = f"Package ID: {str(self.package_id)}, address line 1: {self.address_line_1}"
+        return package_string
