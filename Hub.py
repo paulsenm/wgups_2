@@ -5,9 +5,9 @@ from PackageHash import PackageHash
 class Hub:
     def __init__(self):
         self.truck_fleet = None
-        self.addresses = import_addresses("CSV/addresses.csv")
+        self.addresses, self.address_dict = import_addresses("CSV/addresses.csv")
         self.distance_matrix = import_distances("CSV/distances.csv")
-        self.packages = import_packages("CSV/package_list.csv")
+        self.packages = import_packages("CSV/package_list.csv", self.address_dict)
 
     
 
@@ -15,6 +15,12 @@ class Hub:
         for address in self.addresses:
             address.set_distances(self.distance_matrix[address.address_id - 1])
 
+
+    def get_address_obj_from_address_str(self):
+        pass
+
+    def assign_address_objs_to_packages(self):
+        pass
 
     
 

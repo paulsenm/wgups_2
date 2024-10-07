@@ -24,6 +24,7 @@ def import_distances(file):
     
 
 def import_addresses(file):
+    address_dict = {}
     address_obj_list = []
     with open(file) as address_csv:
         address_data = csv.reader(address_csv, delimiter=',')
@@ -33,9 +34,10 @@ def import_addresses(file):
             address_line_1 = raw_address.split("(")[0].strip()
             address_obj = Address(address_id, address_line_1)
             address_obj_list.append(address_obj)
-    return address_obj_list
+            address_dict[address_line_1] = address_obj
+    return address_obj_list, address_dict
 
-def import_packages(file):
+def import_packages(file, address_dict):
     package_obj_list = []
     with open(file) as package_csv:
         package_data = csv.reader(package_csv, delimiter=',')
@@ -54,8 +56,9 @@ def import_packages(file):
                 notes = package[7]
             else:
                 notes = "No notes"
-
-            the_package = Package(package_id, address_line_1, city, state, zip, deadline, weight, notes, status)
+            address_obj = address_dict.get(address_line_1)
+            address_id = address_obj.address_id if address_obj else None
+            the_package = Package(package_id, address_id, address_line_1, city, state, zip, deadline, weight, notes, status)
             package_obj_list.append(the_package)
             #get priority using get_priority(deadline) function
             #make package obj
