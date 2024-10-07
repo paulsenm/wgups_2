@@ -32,6 +32,8 @@ def import_addresses(file):
             raw_address = address[0]
             address_line_1 = raw_address.split("(")[0].strip()
             address_obj = Address(address_id, address_line_1)
+            address_obj_list.append(address_obj)
+    return address_obj_list
 
 def import_packages(file):
     package_obj_list = []
