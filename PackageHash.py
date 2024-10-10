@@ -29,3 +29,16 @@ class PackageHash:
             if package[0] == package_id:
                 return package[1]
         return None
+    
+    
+    def __str__(self):
+        hash_string = ""
+        for i in range(len(self.hash_table)):
+            bucket = self.hash_table[i]
+            row_string = ""
+            for package in bucket:
+                row_string += str(package)
+                row_string += '\n'
+            hash_string += row_string
+            hash_string += "\n \n \n"
+        return hash_string

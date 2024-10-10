@@ -1,6 +1,7 @@
 #utils for importing csv files and returning lists of package/address/truck objects
 
 import csv
+import datetime
 
 from Package import Package
 from Address import Address
@@ -48,17 +49,27 @@ def import_packages(file, address_dict):
             state = package[3]
             zip = package[4]
             deadline = package[5]
-            weight = package[7]
-            status = "Unknown"
-            notes = ""
+            weight = package[6]
+            status = "Tracking info sent"
+            notes = package[7] if package[7] else "No notes"
+            priority = 3
             
-            if package[7] is not None:
-                notes = package[7]
-            else:
-                notes = "No notes"
+            
             address_obj = address_dict.get(address_line_1)
             address_id = address_obj.address_id if address_obj else None
-            the_package = Package(package_id, address_id, address_line_1, city, state, zip, deadline, weight, notes, status)
+
+            if deadline != "EOD":
+                deadline_time_high = datetime.time(9, 5)
+                deadline_time_med = datetime.time(10, 30)
+                deadline_time = datetime.datetime.strptime(deadline, "%I:%M %p").time()
+                if deadline_time <= deadline_time_high:
+                    priority = 1
+                elif deadline_time <= deadline_time_med:
+                    priority = 2
+                
+
+
+            the_package = Package(package_id, address_id, address_line_1, city, state, zip, deadline, weight, notes, status, priority)
             package_obj_list.append(the_package)
             #get priority using get_priority(deadline) function
             #make package obj
