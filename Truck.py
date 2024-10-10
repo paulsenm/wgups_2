@@ -10,10 +10,12 @@ class Truck:
         self.delivered_packages = []
         self.is_full = False
         self.current_milage = 0
-        self.current_location = addresses[0][0]
+        self.current_location = addresses[0]
         self.current_time = datetime.time(8,0)
         self.current_package = None
         self.average_speed = 18
+        self.package_qty = 16
+        self.package_count = 0
 
 
 
@@ -26,6 +28,9 @@ class Truck:
             self.package_queue_med.append(package_to_insert)
         elif package_to_insert.priority == 3:
             self.package_queue_low.append(package_to_insert)
+        self.package_count += 1
+        if self.package_count >= 16:
+            self.is_full = True
     
     def deliver_package_queue(self, package_queue):
         for package in package_queue:
@@ -69,3 +74,14 @@ class Truck:
 
     def get_nearest_package(self, package):
         pass
+
+    def __str__(self):
+        truck_string = f"Truck {self.truck_id} \n"
+        for package in self.package_queue_high:
+            truck_string += f"High priority package: {str(package)} \n"
+        for package in self.package_queue_med:
+            truck_string += f"Med priority package: {str(package)} \n"
+        for package in self.package_queue_low:
+            truck_string += f"Low piority package: {str(package)} \n"
+
+        return truck_string

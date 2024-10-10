@@ -39,6 +39,15 @@ class Hub:
                 for string in truck_2_mandatory_strings:
                     if string in package_notes:
                         self.truck_fleet[1].load_package(package)
+            elif "Delayed" in package_notes or "Wrong" in package_notes:
+                self.truck_fleet[0].load_package(package)
+            else:
+                if self.truck_fleet[2].is_full == False:
+                    self.truck_fleet[2].load_package(package)
+                else:
+                    self.truck_fleet[0].load_package(package)
+        for truck in self.truck_fleet:
+            print(str(truck))
                     
 
     def update_addresses(self, current_time, package):
