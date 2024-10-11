@@ -14,4 +14,4 @@ for package in test_hub.packages:
 #print(f"hash table: \n{package_hash_table}")
 
 test_hub.make_trucks()
-test_hub.load_trucks()
+test_hub.load_trucks_initial()

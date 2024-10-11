@@ -26,26 +26,26 @@ class Hub:
             new_truck = Truck(new_truck_id, self.addresses)
             self.truck_fleet.append(new_truck)
 
-    def load_trucks(self):
+    def load_trucks_initial(self):
         truck_2_mandatory_strings = ["Can only be on truck 2", "Must be delivered with"]
         delayed_package_strings = ["Delayed on flight", "Wrong address"]
 
 
         for package in self.packages:
-
-            package_notes = package.notes
-            if package_notes != "No notes" and "Delayed" not in package_notes and "Wrong" not in package_notes:
-                print(f"package {package.package_id} had some notes! {package_notes}")
-                for string in truck_2_mandatory_strings:
-                    if string in package_notes:
-                        self.truck_fleet[1].load_package(package)
-            elif "Delayed" in package_notes or "Wrong" in package_notes:
-                self.truck_fleet[0].load_package(package)
-            else:
-                if self.truck_fleet[2].is_full == False:
-                    self.truck_fleet[2].load_package(package)
-                else:
+            package_notes = package.notes            
+            if "Delayed" not in package_notes and "Wrong" not in package_notes:
+                if package_notes != "No notes":
+                    print(f"package {package.package_id} had some notes! {package_notes}")
+                    for string in truck_2_mandatory_strings:
+                        if string in package_notes:
+                            self.truck_fleet[1].load_package(package)
+                elif package.priority == 1:
                     self.truck_fleet[0].load_package(package)
+                else:
+                    if self.truck_fleet[2].is_full == False:
+                        self.truck_fleet[2].load_package(package)
+                    else:
+                        self.truck_fleet[0].load_package(package)
         for truck in self.truck_fleet:
             print(str(truck))
                     

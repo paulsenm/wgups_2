@@ -76,7 +76,7 @@ class Truck:
         pass
 
     def __str__(self):
-        truck_string = f"Truck {self.truck_id} \n"
+        truck_string = f"Truck {self.truck_id} \nCount: {self.package_count} \n"
         for package in self.package_queue_high:
             truck_string += f"High priority package: {str(package)} \n"
         for package in self.package_queue_med:
