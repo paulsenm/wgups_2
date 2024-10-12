@@ -2,7 +2,9 @@ class PackageHash:
     def __init__(self, size = 3):
         self.hash_table = [[] for _ in range(size)]
 
-    def _hash(self, key):
+    def _hash(self, package_id):
+        key = hash(package_id)
+        print(f"package id: {str(package_id)}, hashed id: {str(key)}, package_id mod 3: {str(package_id % 3)}")
         return key % len(self.hash_table)
     
     def insert(self, package):

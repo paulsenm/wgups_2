@@ -1,6 +1,6 @@
 import datetime
-
 from ColorPrinter import print_color as PC
+
 class Truck:
     def __init__(self, truck_id, addresses):
         self.truck_id = truck_id
@@ -17,12 +17,9 @@ class Truck:
         self.average_speed = 18
         self.package_qty = 16
         self.package_count = 0
-
-
+        self.got_late_packages = False
 
     def load_package(self, package_to_insert):
-        #print(f"loading package {package_to_insert.package_id} onto truck {self.truck_id}")
-        #sort package into priority queue based on priority
         if package_to_insert.priority == 1:
             self.package_queue_high.append(package_to_insert)
         elif package_to_insert.priority == 2:
@@ -33,24 +30,22 @@ class Truck:
         if self.package_count >= 16:
             self.is_full = True
     
-    def deliver_all_queues(self):
+    def deliver_all_queues(self, hub):
         if len(self.package_queue_high) > 0:
-            self.deliver_package_queue(self.package_queue_high)
+            self.deliver_package_queue(self.package_queue_high, hub)
             print(f"Delivered high priority packages for truck {self.truck_id}")
         if len(self.package_queue_med) > 0:
-            self.deliver_package_queue(self.package_queue_med)
+            self.deliver_package_queue(self.package_queue_med, hub)
             print(f"Delivered medium priority packages for truck {self.truck_id}")
         if len(self.package_queue_low) > 0:
-            self.deliver_package_queue(self.package_queue_low)
+            self.deliver_package_queue(self.package_queue_low, hub)
             print(f"Delivered low priority packages for truck {self.truck_id}")
 
-
-    def deliver_package_queue(self, package_queue):
-        print(f"made it to deliver_package_queue with {len(package_queue)} packages")
+    def deliver_package_queue(self, package_queue, hub):
+        print(f"Delivering packages, {len(package_queue)} remaining")
         while len(package_queue) > 0:
             package_to_deliver = self.get_nearest_package(package_queue)
-            #if package_to_deliver is not None:
-            self.deliver_package(package_to_deliver, package_queue)
+            self.deliver_package(package_to_deliver, package_queue, hub)
 
     def get_nearest_package(self, package_queue):
         closest_distance = 1000
@@ -61,14 +56,9 @@ class Truck:
             if distance_to_address <= closest_distance:
                 closest_distance = distance_to_address
                 closest_package = package
-
         return closest_package
 
-
-
-
-
-    def deliver_package(self, package, package_queue):
+    def deliver_package(self, package, package_queue, hub):
         drive_distance = self.current_location.get_distance_to_neighbor(package.address_obj)
         self.current_milage += drive_distance
         self.add_time_from_distance(drive_distance)
@@ -76,25 +66,35 @@ class Truck:
         package.delivered_time = self.current_time
         package_queue.remove(package)
         self.delivered_packages.append(package)
-        print(f"{PC("Delivered package:", "yellow")} {PC(package.package_id, "red")} to address: {package.address_obj.address_line_1} at time: {self.current_time.time()}")
-        # if self.current_time > datetime.time(9, 5):
-        #     print("time to get new packages")
+        print(f"{PC('Delivered package:', 'yellow')} {PC(package.package_id, 'red')} to address: {package.address_obj.address_line_1} at time: {self.current_time.time()}")
 
+        # Check if it is past 9:05 AM, get late packages/update addresses
+        if self.current_time.time() >= datetime.time(9, 5) and self.got_late_packages == False:
+            print(f"Time is {self.current_time.time()}. Returning to hub for late packages.")
+            self.got_late_packages = True
+            self.return_to_hub_for_late_packages(hub)
+
+
+    def return_to_hub_for_late_packages(self, hub):
+        late_packages = hub.late_packages
+        if late_packages:
+            while len(hub.late_packages) > 0:
+                self.load_package(hub.get_next_late_package())
+            print(f"Truck {self.truck_id} loaded {len(late_packages)} late packages.")
+        else:
+            print(f"No late packages available for truck {self.truck_id} at 9:05 AM.")
 
     def add_time_from_distance(self, distance):
         minutes_per_mile = 60 / self.average_speed
-        minutes_traveled = distance * minutes_per_mile
-        time_delta = datetime.timedelta(minutes = minutes_traveled)
+        time_delta = datetime.timedelta(minutes=distance * minutes_per_mile)
         self.current_time += time_delta
-
 
     def __str__(self):
         truck_string = f"Truck {self.truck_id} \nCount: {self.package_count} \n"
         for package in self.package_queue_high:
             truck_string += f"High priority package: {str(package)} \n"
         for package in self.package_queue_med:
-            truck_string += f"Med priority package: {str(package)} \n"
+            truck_string += f"Medium priority package: {str(package)} \n"
         for package in self.package_queue_low:
-            truck_string += f"Low piority package: {str(package)} \n"
-
+            truck_string += f"Low priority package: {str(package)} \n"
         return truck_string
