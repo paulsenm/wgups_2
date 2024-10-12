@@ -8,7 +8,7 @@ class Address:
         self.distances = distance_row
 
     def get_distance_to_neighbor(self, other_address):
-        distance = self.distances[other_address.address_id]
+        distance = self.distances[other_address.address_id - 1]
         return distance
 
 

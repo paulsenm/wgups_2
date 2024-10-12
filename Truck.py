@@ -1,5 +1,6 @@
 import datetime
 
+from ColorPrinter import print_color as PC
 class Truck:
     def __init__(self, truck_id, addresses):
         self.truck_id = truck_id
@@ -11,7 +12,7 @@ class Truck:
         self.is_full = False
         self.current_milage = 0
         self.current_location = addresses[0]
-        self.current_time = datetime.time(8,0)
+        self.current_time = datetime.datetime.combine(datetime.date.today(), datetime.time(8, 0))
         self.current_package = None
         self.average_speed = 18
         self.package_qty = 16
@@ -35,56 +36,56 @@ class Truck:
     def deliver_all_queues(self):
         if len(self.package_queue_high) > 0:
             self.deliver_package_queue(self.package_queue_high)
+            print(f"Delivered high priority packages for truck {self.truck_id}")
         if len(self.package_queue_med) > 0:
             self.deliver_package_queue(self.package_queue_med)
+            print(f"Delivered medium priority packages for truck {self.truck_id}")
         if len(self.package_queue_low) > 0:
             self.deliver_package_queue(self.package_queue_low)
+            print(f"Delivered low priority packages for truck {self.truck_id}")
 
 
     def deliver_package_queue(self, package_queue):
-        print("made it to deliver_package_queue")
-        package_to_deliver = self.get_nearest_package(package_queue)
-        if package_to_deliver is not None:
+        print(f"made it to deliver_package_queue with {len(package_queue)} packages")
+        while len(package_queue) > 0:
+            package_to_deliver = self.get_nearest_package(package_queue)
+            #if package_to_deliver is not None:
             self.deliver_package(package_to_deliver, package_queue)
 
     def get_nearest_package(self, package_queue):
         closest_distance = 1000
-        closest_package = None
-        print("made it to get_nearest_package")
+        closest_package = package_queue[0]
         for package in package_queue:
-            delivery_address = package.address
+            delivery_address = package.address_obj
             distance_to_address = self.current_location.get_distance_to_neighbor(delivery_address)
             if distance_to_address <= closest_distance:
                 closest_distance = distance_to_address
                 closest_package = package
 
-        return closest_package, closest_distance
+        return closest_package
 
 
 
 
 
     def deliver_package(self, package, package_queue):
-        drive_distance = self.current_location.get_distance_to_neighbor(package.address)
+        drive_distance = self.current_location.get_distance_to_neighbor(package.address_obj)
         self.current_milage += drive_distance
         self.add_time_from_distance(drive_distance)
         package.status = f"Delivered at {str(self.current_time)}"
         package.delivered_time = self.current_time
         package_queue.remove(package)
         self.delivered_packages.append(package)
-        print(f"delivered package: {package.package_id} to address: {package.address.address_line_1}")
+        print(f"{PC("Delivered package:", "yellow")} {PC(package.package_id, "red")} to address: {package.address_obj.address_line_1} at time: {self.current_time.time()}")
 
 
 
     def add_time_from_distance(self, distance):
-        minutes_per_mile = 60 / self.avg_speed
+        minutes_per_mile = 60 / self.average_speed
         minutes_traveled = distance * minutes_per_mile
         time_delta = datetime.timedelta(minutes = minutes_traveled)
         self.current_time += time_delta
 
-
-    def get_nearest_package(self, package):
-        pass
 
     def __str__(self):
         truck_string = f"Truck {self.truck_id} \nCount: {self.package_count} \n"
