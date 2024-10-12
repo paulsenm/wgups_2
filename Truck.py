@@ -32,6 +32,12 @@ class Truck:
         if self.package_count >= 16:
             self.is_full = True
     
+    def deliver_all_queues(self):
+        self.deliver_package_queue(self.package_queue_high)
+        self.deliver_package_queue(self.package_queue_med)
+        self.deliver_package_queue(self.package_queue_low)
+
+
     def deliver_package_queue(self, package_queue):
         for package in package_queue:
             package_to_deliver = self.get_nearest_package(package_queue)

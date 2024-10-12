@@ -49,7 +49,10 @@ class Hub:
         for truck in self.truck_fleet:
             print(str(truck))
                     
-
+    def start_deliveries(self):
+        for truck in self.truck_fleet:
+            truck.deliver_all_queues()
+            
     def update_addresses(self, current_time, package):
         if current_time >= datetime.time(10, 30):
             print(f"Addresses updated at {str(current_time)}")
