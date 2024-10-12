@@ -3,7 +3,7 @@ from PackageHash import PackageHash
 
 test_hub = Hub()
 test_hub.assign_distances()
-print(test_hub)
+#print(test_hub)
 package_hash_table = PackageHash()
 
 for package in test_hub.packages:

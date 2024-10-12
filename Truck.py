@@ -20,7 +20,7 @@ class Truck:
 
 
     def load_package(self, package_to_insert):
-        print(f"loading package {package_to_insert.package_id} onto truck {self.truck_id}")
+        #print(f"loading package {package_to_insert.package_id} onto truck {self.truck_id}")
         #sort package into priority queue based on priority
         if package_to_insert.priority == 1:
             self.package_queue_high.append(package_to_insert)
@@ -33,20 +33,24 @@ class Truck:
             self.is_full = True
     
     def deliver_all_queues(self):
-        self.deliver_package_queue(self.package_queue_high)
-        self.deliver_package_queue(self.package_queue_med)
-        self.deliver_package_queue(self.package_queue_low)
+        if len(self.package_queue_high) > 0:
+            self.deliver_package_queue(self.package_queue_high)
+        if len(self.package_queue_med) > 0:
+            self.deliver_package_queue(self.package_queue_med)
+        if len(self.package_queue_low) > 0:
+            self.deliver_package_queue(self.package_queue_low)
 
 
     def deliver_package_queue(self, package_queue):
-        for package in package_queue:
-            package_to_deliver = self.get_nearest_package(package_queue)
+        print("made it to deliver_package_queue")
+        package_to_deliver = self.get_nearest_package(package_queue)
+        if package_to_deliver is not None:
             self.deliver_package(package_to_deliver, package_queue)
 
     def get_nearest_package(self, package_queue):
         closest_distance = 1000
         closest_package = None
-        
+        print("made it to get_nearest_package")
         for package in package_queue:
             delivery_address = package.address
             distance_to_address = self.current_location.get_distance_to_neighbor(delivery_address)
@@ -68,6 +72,7 @@ class Truck:
         package.delivered_time = self.current_time
         package_queue.remove(package)
         self.delivered_packages.append(package)
+        print(f"delivered package: {package.package_id} to address: {package.address.address_line_1}")
 
 
 

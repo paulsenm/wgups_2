@@ -33,11 +33,14 @@ def import_addresses(file):
             address_id = len(address_obj_list) + 1
             raw_address = address[0]
             address_line_1 = raw_address.split("(")[0].strip()
+            if "5383" in address_line_1:
+                address_line_1 = "5383 South 900 East #104"            
             address_obj = Address(address_id, address_line_1)
             address_obj_list.append(address_obj)
             address_dict[address_line_1] = address_obj
-    for key in address_dict:
-        print(f"key was: {key}, value was: {str(address_dict[key])}")
+
+    #for key in address_dict:
+        #print(f"key was: {key}, value was: {str(address_dict[key])}")
     return address_obj_list, address_dict
 
 def import_packages(file, address_dict):
@@ -59,9 +62,9 @@ def import_packages(file, address_dict):
             
             address_obj = address_dict.get(address_line_1)
             address_id = address_obj.address_id if address_obj else None
-            print(f"In import_packages, package_id was: {package_id} address_id was: {address_id}")
+            #print(f"In import_packages, package_id was: {package_id} address_id was: {address_id}")
             if address_id is None:
-                print(f"couldn't find matching address for: {address_line_1}")
+                #print(f"couldn't find matching address for: {address_line_1}")
                 address_line_1 = "5383 South 900 East #104"
                 address_obj = address_dict.get("5383 South 900 East #104")
 

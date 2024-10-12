@@ -35,7 +35,7 @@ class Hub:
             package_notes = package.notes            
             if "Delayed" not in package_notes and "Wrong" not in package_notes:
                 if package_notes != "No notes":
-                    print(f"package {package.package_id} had some notes! {package_notes}")
+                    #print(f"package {package.package_id} had some notes! {package_notes}")
                     for string in truck_2_mandatory_strings:
                         if string in package_notes:
                             self.truck_fleet[1].load_package(package)
@@ -46,8 +46,8 @@ class Hub:
                         self.truck_fleet[2].load_package(package)
                     else:
                         self.truck_fleet[0].load_package(package)
-        for truck in self.truck_fleet:
-            print(str(truck))
+        #for truck in self.truck_fleet:
+            #print(str(truck))
                     
     def start_deliveries(self):
         for truck in self.truck_fleet:
