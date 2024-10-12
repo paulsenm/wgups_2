@@ -77,8 +77,8 @@ class Truck:
         package_queue.remove(package)
         self.delivered_packages.append(package)
         print(f"{PC("Delivered package:", "yellow")} {PC(package.package_id, "red")} to address: {package.address_obj.address_line_1} at time: {self.current_time.time()}")
-        if self.current_time > datetime.time(9, 5):
-            print("time to get new packages")
+        # if self.current_time > datetime.time(9, 5):
+        #     print("time to get new packages")
 
 
     def add_time_from_distance(self, distance):
