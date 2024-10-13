@@ -9,8 +9,10 @@ class Truck:
         self.package_queue_med = []
         self.package_queue_low = []
         self.delivered_packages = []
+        self.late_package_count = 0
         self.is_full = False
         self.current_milage = 0
+        self.hub_location = addresses[0]
         self.current_location = addresses[0]
         self.current_time = datetime.datetime.combine(datetime.date.today(), datetime.time(8, 0))
         self.current_package = None
@@ -66,11 +68,18 @@ class Truck:
         package.delivered_time = self.current_time
         package_queue.remove(package)
         self.delivered_packages.append(package)
-        print(f"{PC('Delivered package:', 'yellow')} {PC(package.package_id, 'red')} to address: {package.address_obj.address_line_1} at time: {self.current_time.time()}")
+        self.current_location = package.address_obj
+        if package.priority == 1:
+            id_color = "red"
+        elif package.priority == 2:
+            id_color = "yellow"
+        elif package.priority == 3:
+            id_color = "green"
+        print(f"{PC('Delivered package:', id_color)} {PC(package.package_id, 'red')} to address: {package.address_obj.address_line_1} at time: {PC(self.current_time.time(), "blue")}")
 
         # Check if it is past 9:05 AM, get late packages/update addresses
-        if self.current_time.time() >= datetime.time(9, 5) and self.got_late_packages == False:
-            print(f"Time is {self.current_time.time()}. Returning to hub for late packages.")
+        if self.current_time.time() >= datetime.time(9, 5) and self.got_late_packages == False and hub.late_packages:
+            print(PC(f"Time is {self.current_time.time()}. Returning to hub for late packages.", "green"))
             self.got_late_packages = True
             self.return_to_hub_for_late_packages(hub)
 
@@ -78,11 +87,19 @@ class Truck:
     def return_to_hub_for_late_packages(self, hub):
         late_packages = hub.late_packages
         if late_packages:
+            self.go_to_hub()
             while len(hub.late_packages) > 0:
                 self.load_package(hub.get_next_late_package())
-            print(f"Truck {self.truck_id} loaded {len(late_packages)} late packages.")
+                self.late_package_count += 1
+            print(f"Truck {self.truck_id} loaded {self.late_package_count} late packages.")
         else:
             print(f"No late packages available for truck {self.truck_id} at 9:05 AM.")
+
+    def go_to_hub(self):
+        print(f"going back to hub from {self.current_location.address_line_1}")
+        distance_to_add = self.current_location.get_distance_to_neighbor(self.hub_location)
+        self.add_time_from_distance(distance_to_add)
+        self.current_location = self.hub_location
 
     def add_time_from_distance(self, distance):
         minutes_per_mile = 60 / self.average_speed

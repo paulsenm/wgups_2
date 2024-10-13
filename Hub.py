@@ -12,6 +12,7 @@ class Hub:
         self.packages = import_packages("CSV/package_list.csv", self.address_dict)
         self.truck_qty = 3
         self.late_packages = []
+        self.late_package_count = 0
 
     def assign_distances(self):
         for address in self.addresses:
@@ -31,6 +32,7 @@ class Hub:
             package_notes = package.notes
             if "Delayed" in package_notes or "Wrong" in package_notes:
                 self.late_packages.append(package)
+                self.late_package_count += 1
             else:
                 if package_notes != "No notes":
                     for string in truck_2_mandatory_strings:
