@@ -13,6 +13,7 @@ class Hub:
         self.truck_qty = 3
         self.late_packages = []
         self.late_package_count = 0
+        self.third_truck_sent = False
 
     def assign_distances(self):
         for address in self.addresses:
@@ -40,8 +41,6 @@ class Hub:
                             self.truck_fleet[1].load_package(package)
                 elif package.priority == 1:
                     self.truck_fleet[0].load_package(package)
-                # elif package.priority == 2 and package_notes == "No notes":
-                #     self.truck_fleet[1].load_package(package)
                 else:
                     if not self.truck_fleet[2].is_full:
                         if package.priority != 2:
@@ -52,8 +51,13 @@ class Hub:
                         self.truck_fleet[0].load_package(package)
 
     def start_deliveries(self):
-        for truck in self.truck_fleet:
-            truck.deliver_all_queues(self)
+        self.truck_fleet[0].deliver_all_queues(self)
+        self.truck_fleet[1].deliver_all_queues(self)
+        
+    def send_third_truck(self, driver_return_time):
+        self.third_truck_sent = True
+        self.truck_fleet[2].deliver_all_queues(self, driver_return_time)
+        
 
     def get_next_late_package(self):
         if self.late_packages:
