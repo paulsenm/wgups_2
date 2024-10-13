@@ -40,9 +40,14 @@ class Hub:
                             self.truck_fleet[1].load_package(package)
                 elif package.priority == 1:
                     self.truck_fleet[0].load_package(package)
+                # elif package.priority == 2 and package_notes == "No notes":
+                #     self.truck_fleet[1].load_package(package)
                 else:
                     if not self.truck_fleet[2].is_full:
-                        self.truck_fleet[2].load_package(package)
+                        if package.priority != 2:
+                            self.truck_fleet[2].load_package(package)
+                        else:
+                            self.truck_fleet[1].load_package(package)
                     else:
                         self.truck_fleet[0].load_package(package)
 
