@@ -72,6 +72,7 @@ class Truck:
         package.delivered_time = self.current_time
         package_queue.remove(package)
         self.delivered_packages.append(package)
+        hub.delivered_packages.append(package)
         self.current_location = package.address_obj
         if package.priority == 1:
             id_color = "red"

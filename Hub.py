@@ -13,6 +13,7 @@ class Hub:
         self.truck_qty = 3
         self.late_packages = []
         self.late_package_count = 0
+        self.delivered_packages = []
         self.third_truck_sent = False
 
     def assign_distances(self):
