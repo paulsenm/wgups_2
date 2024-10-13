@@ -79,7 +79,7 @@ class Truck:
             id_color = "yellow"
         elif package.priority == 3:
             id_color = "green"
-        print(f"{PC('Delivered package:', id_color)} {PC(package.package_id, 'red')} to address: {package.address_obj.address_line_1} at time: {PC(self.current_time.time(), "blue")}")
+        print(f"{PC('Delivered package:', id_color)} {PC(package.package_id, 'red')} to address: {package.address_obj.address_line_1} at time: {PC(self.current_time.time(), 'blue')}")
 
         # Check if it is past 9:05 AM, get late packages/update addresses
         if self.current_time.time() >= datetime.time(9, 5) and self.got_late_packages == False and hub.late_packages:
