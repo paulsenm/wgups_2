@@ -32,6 +32,17 @@ class Truck:
         if self.package_count >= 16:
             self.is_full = True
     
+    def set_en_route_time(self, time):
+        if len(self.package_queue_high) > 0:
+            for package in self.package_queue_high:
+                package.en_route_time = time
+        if len(self.package_queue_med) > 0:
+            self.deliver_package_queue(self.package_queue_med, hub)
+            print(f"Delivered medium priority packages for truck {self.truck_id}")
+        if len(self.package_queue_low) > 0:
+            self.deliver_package_queue(self.package_queue_low, hub)
+            print(f"Delivered low priority packages for truck {self.truck_id}")        
+
     def deliver_all_queues(self, hub, start_time = datetime.datetime.combine(datetime.date.today(), datetime.time(8, 0))):
         self.current_time = start_time
         if len(self.package_queue_high) > 0:
@@ -73,6 +84,7 @@ class Truck:
         package.delivered_time = self.current_time
         package_queue.remove(package)
         self.delivered_packages.append(package)
+        hub.delivered_packages.append(package)
         self.current_location = package.address_obj
         if package.priority == 1:
             id_color = "red"
@@ -80,7 +92,7 @@ class Truck:
             id_color = "yellow"
         elif package.priority == 3:
             id_color = "green"
-        print(f"{PC('Delivered package:', id_color)} {PC(package.package_id, 'red')} to address: {package.address_obj.address_line_1} at time: {PC(self.current_time.time(), "blue")}")
+        print(f"{PC('Delivered package:', id_color)} {PC(package.package_id, 'red')} to address: {package.address_obj.address_line_1} at time: {PC(self.current_time.time(), 'blue')}")
 
         # Check if it is past 9:05 AM, get late packages/update addresses
         if self.current_time.time() >= datetime.time(9, 5) and self.got_late_packages == False and hub.late_packages:
