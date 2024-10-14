@@ -43,6 +43,7 @@ class Truck:
         if len(self.package_queue_low) > 0:
             self.deliver_package_queue(self.package_queue_low, hub)
             print(f"Delivered low priority packages for truck {self.truck_id}")
+        print(f"total milage for truck {self.truck_id} was {self.current_milage}")
         self.go_to_hub()
         if hub.third_truck_sent == False:
             hub.send_third_truck(self.current_time)
