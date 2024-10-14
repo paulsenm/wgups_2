@@ -15,6 +15,7 @@ class Package:
         self.delivered_time = None
         self.at_hub_time = None 
         self.on_truck_time = None
+        self.en_route_time = None
 
 
 
