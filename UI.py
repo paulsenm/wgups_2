@@ -49,7 +49,7 @@ class UI:
             print(f"Checking packages delivered by {target_time}...")
             # Example filter by time - assuming packages have a 'delivered_time' attribute
             #late_packages = [pkg for pkg in self.packages if not pkg.on_truck_time]
-            late_packages = [pkg for pkg in self.hub.late_packages]
+            late_packages = [pkg for pkg in self.packages if pkg.on_truck_time and pkg.on_truck_time.time() >= target_time]
             on_truck_packages = [pkg for pkg in self.packages if pkg.on_truck_time and pkg.on_truck_time.time() <= target_time]
             en_route_packages = [pkg for pkg in self.packages if pkg.en_route_time and pkg.en_route_time.time() <= target_time]
             delivered_packages = [pkg for pkg in self.packages if pkg.delivered_time and pkg.delivered_time.time() <= target_time]
