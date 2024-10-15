@@ -59,6 +59,18 @@ class Hub:
         self.third_truck_sent = True
         self.truck_fleet[2].deliver_all_queues(self, driver_return_time)
         
+    def print_packages_by_time(self, time):
+        packages_at_hub = []
+        packages_on_truck = []
+        packages_en_route = []
+        for package in self.packages:
+            if package.at_hub_time and package.at_hub_time <= time:
+                packages_at_hub.append(package)
+            elif package.on_truck_time and package.on_truck_time <= time:
+                packages_on_truck.append(package)
+            elif  package.en_route_time and package.en_route_time <= time:
+                packages_en_route.append(package)
+        print(f"there were {len(packages_at_hub)} packages at the hub, {len(packages_on_truck)} packages on a truck, and {len(packages_en_route)} en route.")
 
     def get_next_late_package(self):
         if self.late_packages:

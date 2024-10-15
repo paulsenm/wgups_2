@@ -48,9 +48,12 @@ class UI:
             target_time = datetime.time(hours, minutes)
             print(f"Checking packages delivered by {target_time}...")
             # Example filter by time - assuming packages have a 'delivered_time' attribute
-            delivered_packages = [pkg for pkg in self.packages if pkg.delivered_time and pkg.delivered_time.time() <= target_time]
+            on_truck_packages = [pkg for pkg in self.packages if pkg.on_truck_time and pkg.on_truck_time.time() <= target_time]
             en_route_packages = [pkg for pkg in self.packages if pkg.delivered_time and pkg.delivered_time.time() <= target_time]
             delivered_packages = [pkg for pkg in self.packages if pkg.delivered_time and pkg.delivered_time.time() <= target_time]
+            if on_truck_packages:
+                for package in on_truck_packages:
+                    print(f"Package Id: {package.package_id}, Loaded onto truck at: {package.on_truck_time}")
             if delivered_packages:
                 for package in delivered_packages:
                     print(f"Package ID: {package.package_id}, Delivered at {package.delivered_time}")

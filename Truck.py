@@ -5,16 +5,22 @@ class Truck:
     def __init__(self, truck_id, addresses):
         self.truck_id = truck_id
         self.current_driver = -1
-        self.package_queue_high = []
-        self.package_queue_med = []
-        self.package_queue_low = []
-        self.delivered_packages = []
+        self.all_queues = {
+            "package_queue_high": [],
+            "package_queue_med": [],
+            "package_queue_low": [],
+            "delivered_packages": []
+        }
+        # self.package_queue_high = []
+        # self.package_queue_med = []
+        # self.package_queue_low = []
+        # self.delivered_packages = []
         self.late_package_count = 0
         self.is_full = False
         self.current_milage = 0
         self.hub_location = addresses[0]
         self.current_location = addresses[0]
-        self.current_time = None
+        self.current_time = datetime.datetime.combine(datetime.date.today(), datetime.time(8, 0))
         self.current_package = None
         self.average_speed = 18
         self.package_qty = 16
@@ -22,38 +28,40 @@ class Truck:
         self.got_late_packages = False
 
     def load_package(self, package_to_insert):
+        self.set_on_truck_time(package_to_insert, self.current_time)
         if package_to_insert.priority == 1:
-            self.package_queue_high.append(package_to_insert)
+            self.all_queues["package_queue_high"].append(package_to_insert)
         elif package_to_insert.priority == 2:
-            self.package_queue_med.append(package_to_insert)
+            self.all_queues["package_queue_med"].append(package_to_insert)
         elif package_to_insert.priority == 3:
-            self.package_queue_low.append(package_to_insert)
+            self.all_queues["package_queue_low"].append(package_to_insert)
         self.package_count += 1
         if self.package_count >= 16:
             self.is_full = True
     
-    def set_en_route_time(self, time):
-        if len(self.package_queue_high) > 0:
-            for package in self.package_queue_high:
-                package.en_route_time = time
-        if len(self.package_queue_med) > 0:
-            self.deliver_package_queue(self.package_queue_med, hub)
-            print(f"Delivered medium priority packages for truck {self.truck_id}")
-        if len(self.package_queue_low) > 0:
-            self.deliver_package_queue(self.package_queue_low, hub)
-            print(f"Delivered low priority packages for truck {self.truck_id}")        
+    def set_en_route_time(self, package, time):
+        package.en_route_time = time
+
+    def set_on_truck_time(self, package, time):
+        package.on_truck_time = time
 
     def deliver_all_queues(self, hub, start_time = datetime.datetime.combine(datetime.date.today(), datetime.time(8, 0))):
         self.current_time = start_time
-        if len(self.package_queue_high) > 0:
-            self.deliver_package_queue(self.package_queue_high, hub)
-            print(f"Delivered high priority packages for truck {self.truck_id}")
-        if len(self.package_queue_med) > 0:
-            self.deliver_package_queue(self.package_queue_med, hub)
-            print(f"Delivered medium priority packages for truck {self.truck_id}")
-        if len(self.package_queue_low) > 0:
-            self.deliver_package_queue(self.package_queue_low, hub)
-            print(f"Delivered low priority packages for truck {self.truck_id}")
+        
+        for queue_name, queue in self.all_queues.items():
+            if len(queue) > 0 and queue_name != "delivered_packages":
+                self.deliver_package_queue(queue, hub)
+                print(f"Done delivering {queue_name} packages for truck {self.truck_id}")
+
+        # if len(self.package_queue_high) > 0:
+        #     self.deliver_package_queue(self.package_queue_high, hub)
+        #     print(f"Delivered high priority packages for truck {self.truck_id}")
+        # if len(self.package_queue_med) > 0:
+        #     self.deliver_package_queue(self.package_queue_med, hub)
+        #     print(f"Delivered medium priority packages for truck {self.truck_id}")
+        # if len(self.package_queue_low) > 0:
+        #     self.deliver_package_queue(self.package_queue_low, hub)
+        #     print(f"Delivered low priority packages for truck {self.truck_id}")
         print(f"total milage for truck {self.truck_id} was {self.current_milage}")
         self.go_to_hub()
         if hub.third_truck_sent == False:
@@ -83,7 +91,7 @@ class Truck:
         package.status = f"Delivered at {str(self.current_time)}"
         package.delivered_time = self.current_time
         package_queue.remove(package)
-        self.delivered_packages.append(package)
+        self.all_queues["delivered_packages"].append(package)
         hub.delivered_packages.append(package)
         self.current_location = package.address_obj
         if package.priority == 1:
@@ -125,10 +133,13 @@ class Truck:
 
     def __str__(self):
         truck_string = f"Truck {self.truck_id} \nCount: {self.package_count} \n"
-        for package in self.package_queue_high:
-            truck_string += f"High priority package: {str(package)} \n"
-        for package in self.package_queue_med:
-            truck_string += f"Medium priority package: {str(package)} \n"
-        for package in self.package_queue_low:
-            truck_string += f"Low priority package: {str(package)} \n"
+        for queue_name, queue in self.all_queues.items():
+            for package in queue:
+                truck_string += f"{queue_name} package: {str(package)}"
+        # for package in self.package_queue_high:
+        #     truck_string += f"High priority package: {str(package)} \n"
+        # for package in self.package_queue_med:
+        #     truck_string += f"Medium priority package: {str(package)} \n"
+        # for package in self.package_queue_low:
+        #     truck_string += f"Low priority package: {str(package)} \n"
         return truck_string
