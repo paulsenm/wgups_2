@@ -1,5 +1,7 @@
 import datetime
 
+from ColorPrinter import print_color as PC
+
 class Package:
     def __init__(self, package_id, address_id, address_obj, address_line_1, city, state, zip, deadline, weight, notes, status, priority):
         self.package_id = package_id
@@ -14,14 +16,30 @@ class Package:
         self.notes = notes
         self.priority = priority
         self.status = status if status is not None else "Unknown"
-        self.delivered_time = None
         self.at_hub_time = None 
         self.on_truck_time = None
         self.en_route_time = None
+        self.delivered_time = None
 
 
-    def print_status_time(self):
-        pass
+    def print_status_time(self, status):
+        color = ""
+        status_string = ""
+        match status:
+            case "late": 
+                color = "red"
+                status_string = "running late"
+            case "truck": 
+                color = "yellow"
+                status_string = "on truck, stationary"
+            case "route": 
+                color = "blue"
+                status_string = "on truck, headed to destination"
+            case "delivered":
+                color = "green"
+                status_string = "delivered"
+        
+        return f"Package {self.package_id} is currently {PC(status_string, color)}"
     
     def __str__(self):
         package_string = f"Package ID: {str(self.package_id)}, address line 1: {self.address_line_1}, and address id was: {str(self.address_id)} and priority is: {str(self.priority)}"
