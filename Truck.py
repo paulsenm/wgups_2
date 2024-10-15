@@ -43,6 +43,10 @@ class Truck:
 
     def deliver_all_queues(self, hub, start_time = datetime.datetime.combine(datetime.date.today(), datetime.time(8, 0))):
         self.current_time = start_time
+
+        for queue_name, queue in self.all_queues.items():
+            for package in queue:
+                package.en_route_time = start_time
         
         for queue_name, queue in self.all_queues.items():
             if len(queue) > 0 and queue_name != "delivered_packages":
