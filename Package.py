@@ -23,7 +23,9 @@ class Package:
 
 
     def print_status_time(self, status):
+        package_priority = self.priority
         color = ""
+        package_id_color = "blue"
         status_string = ""
         match status:
             case "late": 
@@ -38,8 +40,18 @@ class Package:
             case "delivered":
                 color = "green"
                 status_string = "delivered"
-        
-        return f"Package {self.package_id} is currently {PC(status_string, color)}"
+
+        match package_priority:
+            case 1:
+                package_id_color = "red"
+            case 2: 
+                package_id_color = "yellow"
+            case 3:
+                package_id_color = "green"
+
+
+
+        return f"Package {PC(self.package_id, package_id_color)} is currently {PC(status_string, color)}"
     
     def __str__(self):
         package_string = f"Package ID: {str(self.package_id)}, address line 1: {self.address_line_1}, and address id was: {str(self.address_id)} and priority is: {str(self.priority)}"

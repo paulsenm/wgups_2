@@ -105,7 +105,7 @@ class Truck:
         if late_packages:
             self.go_to_hub()
             while len(hub.late_packages) > 0:
-                self.load_package(hub.get_next_late_package())
+                self.load_package(hub.get_next_late_package(self.current_time))
                 self.late_package_count += 1
             print(f"Truck {self.truck_id} loaded {self.late_package_count} late packages.")
         else:

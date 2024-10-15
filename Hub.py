@@ -72,8 +72,9 @@ class Hub:
                 packages_en_route.append(package)
         print(f"there were {len(packages_at_hub)} packages at the hub, {len(packages_on_truck)} packages on a truck, and {len(packages_en_route)} en route.")
 
-    def get_next_late_package(self):
+    def get_next_late_package(self, current_time):
         if self.late_packages:
             package_to_load = self.late_packages[0]
             self.late_packages.remove(package_to_load)
+            package_to_load.en_route_time = current_time
             return package_to_load
