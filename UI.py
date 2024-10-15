@@ -45,14 +45,38 @@ class UI:
         time_input = input("Enter time (HH:MM) to check package status: ")
         try:
             hours, minutes = map(int, time_input.split(":"))
-            target_time = datetime.time(hours, minutes)
+            today = datetime.date.today()
+            target_time = datetime.datetime.combine(today, datetime.time(hours, minutes))
             print(f"Checking packages delivered by {target_time}...")
             # Example filter by time - assuming packages have a 'delivered_time' attribute
             #late_packages = [pkg for pkg in self.packages if not pkg.on_truck_time]
-            late_packages = [pkg for pkg in self.packages if pkg.on_truck_time and pkg.on_truck_time.time() >= target_time]
-            on_truck_packages = [pkg for pkg in self.packages if pkg.on_truck_time and pkg.on_truck_time.time() <= target_time and pkg.en_route_time.time() > target_time]
-            en_route_packages = [pkg for pkg in self.packages if pkg.en_route_time and pkg.en_route_time.time() >= target_time and pkg.delivered_time.time() > target_time]
-            delivered_packages = [pkg for pkg in self.packages if pkg.delivered_time and pkg.delivered_time.time() >= target_time]
+            late_packages = []
+            on_truck_packages = []
+            en_route_packages = []
+            delivered_packages = []
+            for package in self.packages:
+                # Check if the package was late to get on the truck
+                if package.on_truck_time and package.on_truck_time >= target_time:
+                    late_packages.append(package)
+                # Check if the package is on the truck but not yet delivered
+                elif package.on_truck_time and package.on_truck_time <= target_time and (package.en_route_time is None or package.en_route_time >= target_time):
+                    on_truck_packages.append(package)
+                # Check if the package is en route
+                elif package.en_route_time and package.en_route_time <= target_time and (package.delivered_time is None or package.delivered_time > target_time):
+                    en_route_packages.append(package)
+                # Check if the package has already been delivered by the target time
+                elif package.delivered_time and package.delivered_time <= target_time:
+                    delivered_packages.append(package)
+                else:
+                    print(f"Package {package.package_id} was not found!")
+                    if package.delivered_time:
+                        print(f"Package had delivered time of {package.delivered_time}")
+
+
+            # late_packages = [pkg for pkg in self.packages if pkg.on_truck_time and pkg.on_truck_time.time() >= target_time]
+            # on_truck_packages = [pkg for pkg in self.packages if pkg.on_truck_time and pkg.on_truck_time.time() <= target_time and pkg.en_route_time.time() > target_time]
+            # en_route_packages = [pkg for pkg in self.packages if pkg.en_route_time and pkg.en_route_time.time() >= target_time and pkg.delivered_time.time() > target_time]
+            # delivered_packages = [pkg for pkg in self.packages if pkg.delivered_time and pkg.delivered_time.time() >= target_time]
             if late_packages:
                 for package in late_packages:
                     #print(f"Package ID: {package.package_id}, Hasn't made it to the hub yet.")

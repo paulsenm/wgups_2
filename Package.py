@@ -30,24 +30,32 @@ class Package:
         match status:
             case "late": 
                 color = "red"
-                status_string = "running late"
+                status_string = f"running late"
             case "truck": 
                 color = "yellow"
-                status_string = "on truck, stationary"
+                status_string = f"on truck, stationary as of {self.on_truck_time.time()}"
             case "route": 
                 color = "blue"
-                status_string = "on truck, headed to destination"
+                status_string = f"on truck, headed to destination {self.en_route_time.time()}"
             case "delivered":
                 color = "green"
-                status_string = "delivered"
+                status_string = f"delivered as of {self.delivered_time.time()}"
 
-        match package_priority:
-            case 1:
-                package_id_color = "red"
-            case 2: 
-                package_id_color = "yellow"
-            case 3:
-                package_id_color = "green"
+        # match package_priority:
+        #     case 1:
+        #         package_id_color = "red"
+        #     case 2: 
+        #         package_id_color = "yellow"
+        #     case 3:
+        #         package_id_color = "green"
+
+        if package_priority == 1:
+            package_id_color = "red"
+        elif package_priority == 2:
+            package_id_color = "yellow"
+        elif package_priority == 3:
+            package_id_color = "green"
+        else: package_id_color = "blue"
 
 
 
