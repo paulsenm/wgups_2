@@ -1,3 +1,4 @@
+#Returns the given string in the given color
 def print_color(string, color):
     match color:
         case "red":

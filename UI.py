@@ -1,11 +1,12 @@
 import datetime
-
+#UI Class for handling user interface
 class UI:
     def __init__(self, hub):
         self.hub = hub
         self.packages = hub.delivered_packages
         self.running = True  # Flag to control the UI loop
 
+    #Starts the main UI loop and processes user input
     def initialize_ui(self):
         print(f"Welcome to WGUPS command line UI")
         
@@ -32,6 +33,7 @@ class UI:
                 case _:
                     print("Invalid choice. Please try again.")
 
+    #Prompts the user to enter a package ID and displays the package details
     def get_package_by_id(self):
         package_id = input("Enter package id: ")
         try:
@@ -44,6 +46,7 @@ class UI:
         except ValueError:
             print("Invalid package ID. Please enter a number.")
 
+    #Prompts the user to enter a time and displays the status of packages at that time
     def check_package_status_by_time(self):
         time_input = input("Enter time (HH:MM) to check package status: ")
         try:
@@ -73,6 +76,7 @@ class UI:
                     if package.delivered_time:
                         print(f"Package had delivered time of {package.delivered_time}")
 
+            #Use print_status_time() from Package class to display formatted string for package
             if late_packages:
                 for package in late_packages:
                     print(package.print_status_time("late"))
@@ -90,12 +94,15 @@ class UI:
         except ValueError:
             print("Invalid time format. Please enter time in HH:MM format.")
 
+
+    #Searches for a package by its ID in the packages list
     def search_package_by_id(self, package_id):
         for package in self.packages:
             if package.package_id == package_id:
                 return package
         return None
 
+    #Displays all delivered packages
     def view_all_delivered_packages(self):
         if not self.packages:
             print("No packages have been delivered yet.")
@@ -104,12 +111,14 @@ class UI:
             for package in self.packages:
                 print(str(package))
 
+    #Displays the total miles driven by all trucks
     def get_total_miles_traveled(self):
         total_miles = 0
         for truck in self.hub.truck_fleet:
             total_miles += truck.current_milage
         print(f"Total miles driven by all trucks: {total_miles}")
 
+    #Exit the UI
     def exit_ui(self):
         print("Exiting WGUPS command line UI. Goodbye!")
         self.running = False

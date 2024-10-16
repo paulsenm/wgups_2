@@ -6,6 +6,7 @@ import datetime
 from Package import Package
 from Address import Address
 
+#Import the distances from distance csv, create adjacency matrix
 def import_distances(file):
     distance_matrix = []
     with open(file) as distance_csv:
@@ -23,7 +24,7 @@ def import_distances(file):
                     distance_matrix[row][col] = float(distance_matrix[col][row])
     return distance_matrix
     
-
+#Make a list of address objects from address csv
 def import_addresses(file):
     address_dict = {}
     address_obj_list = []
@@ -43,6 +44,7 @@ def import_addresses(file):
         #print(f"key was: {key}, value was: {str(address_dict[key])}")
     return address_obj_list, address_dict
 
+#Make list of package objects from package csv
 def import_packages(file, address_dict):
     package_obj_list = []
     with open(file) as package_csv:

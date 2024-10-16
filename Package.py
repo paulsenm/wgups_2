@@ -22,7 +22,7 @@ class Package:
         self.en_route_time = None
         self.delivered_time = None
 
-
+    #Works with check_package_status_by_time() in UI class to print formatted package string with current status
     def print_status_time(self, status):
         package_priority = self.priority
         color = ""
@@ -49,8 +49,6 @@ class Package:
         elif package_priority == 3:
             package_id_color = "green"
         else: package_id_color = "blue"
-
-
 
         return f"Package {PC(self.package_id, package_id_color)} is currently {PC(status_string, color)}"
     
