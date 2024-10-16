@@ -15,6 +15,7 @@ class Package:
         self.weight = weight
         self.notes = notes
         self.priority = priority
+        self.truck_id = -1
         self.status = status if status is not None else "Unknown"
         self.at_hub_time = None 
         self.on_truck_time = None
@@ -25,7 +26,7 @@ class Package:
     def print_status_time(self, status):
         package_priority = self.priority
         color = ""
-        package_id_color = "blue"
+        package_id_color = ""
         status_string = ""
         match status:
             case "late": 
@@ -33,21 +34,13 @@ class Package:
                 status_string = f"running late"
             case "truck": 
                 color = "yellow"
-                status_string = f"on truck, stationary as of {self.on_truck_time.time()}"
+                status_string = f"on truck {self.truck_id}, stationary as of {self.on_truck_time.time()}"
             case "route": 
                 color = "blue"
-                status_string = f"on truck, headed to destination {self.en_route_time.time()}"
+                status_string = f"on truck {self.truck_id}, headed to destination {self.en_route_time.time()}"
             case "delivered":
                 color = "green"
-                status_string = f"delivered as of {self.delivered_time.time()}"
-
-        # match package_priority:
-        #     case 1:
-        #         package_id_color = "red"
-        #     case 2: 
-        #         package_id_color = "yellow"
-        #     case 3:
-        #         package_id_color = "green"
+                status_string = f"delivered by truck {self.truck_id} as of {self.delivered_time.time()}"
 
         if package_priority == 1:
             package_id_color = "red"
@@ -62,5 +55,5 @@ class Package:
         return f"Package {PC(self.package_id, package_id_color)} is currently {PC(status_string, color)}"
     
     def __str__(self):
-        package_string = f"Package ID: {str(self.package_id)}, address line 1: {self.address_line_1}, and address id was: {str(self.address_id)} and priority is: {str(self.priority)}"
+        package_string = f"Package ID: {str(self.package_id)}, address line 1: {self.address_line_1}, was loaded onto truck {self.truck_id}, waiting at hub at {self.on_truck_time.time()}, left the hub at {self.en_route_time.time()}, and was delivered at {self.delivered_time.time()}.  Priority was: {str(self.priority)}"
         return package_string

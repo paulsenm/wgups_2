@@ -1,3 +1,8 @@
+#Id: 012350434
+#Michael Paulsen
+#WGUPS App
+#C950 - Data Structures II
+
 from Hub import Hub
 from PackageHash import PackageHash
 from UI import UI
