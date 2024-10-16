@@ -2,10 +2,12 @@ class PackageHash:
     def __init__(self, size = 3):
         self.hash_table = [[] for _ in range(size)]
 
+    #Compute a hash value based on package id
     def _hash(self, package_id):
         key = hash(package_id)
         return key % len(self.hash_table)
     
+    #Insert package into hash table with data
     def insert(self, package):
         package_id = package.package_id
         package_data = {
@@ -24,6 +26,7 @@ class PackageHash:
         index = self._hash(package_id)
         self.hash_table[index].append((package_id, package_data))
 
+    #Searches for a package in the hash table by its id
     def search(self, package_id):
         index = self._hash(package_id)
         for package in self.hash_table[index]:
@@ -31,13 +34,15 @@ class PackageHash:
                 return package[1]
         return None
     
+    #Similar to the search method, but returns the key-value tuple
     def search_kv(self, package_id):
         index = self._hash(package_id)
         for package_kv in self.hash_table[index]:
             if package_kv[0] == package_id:
                 return package_kv
         return None
-
+    
+    #Updates an existing package's details in the hash table
     def update(self, package):
         package_kv_to_update = self.search_kv(package.package_id)
         if package_kv_to_update:
@@ -52,6 +57,7 @@ class PackageHash:
         else:
             print(f"Package with ID {package.package_id} not found for update.")
     
+    #Returns a string representation of the entire hash table
     def __str__(self):
         hash_string = ""
         for i in range(len(self.hash_table)):
